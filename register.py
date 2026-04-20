@@ -130,11 +130,11 @@ with col1:
 
 with col2:
     if st.button("⏪ Back"):
-        st.switch_page("pages/login.py")
+        st.switch_page("login.py")
 
 st.write("<br>", unsafe_allow_html=True)
 st.divider()
 
 st.markdown("<p style='text-align: center; color: #888;'>Already have an account?</p>", unsafe_allow_html=True)
 if st.button("🚀 Go to Login"):
-    st.switch_page("pages/login.py")
+    st.switch_page("login.py")
