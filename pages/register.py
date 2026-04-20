@@ -6,7 +6,7 @@ from streamlit_lottie import st_lottie
 
 # ---------- PAGE CONFIG ----------
 st.set_page_config(
-    page_title="Login | Heart AI", 
+    page_title="Register | Heart AI", 
     page_icon="❤️", 
     layout="centered", 
     initial_sidebar_state="collapsed"
@@ -18,13 +18,13 @@ st.markdown("""
         /* Hide Everything Unnecessary & Fix Top Box Issue */
         [data-testid="stSidebar"], [data-testid="collapsedControl"], header {display: none;}
         
-        /* Remove Top White Space/Box and unwanted lines */
+        /* Remove Top White Space/Box */
         .block-container {
             padding-top: 2rem !important;
             max-width: 500px !important;
         }
         
-        /* Background Styling */
+        /* Background Styling - Same as Login */
         .stApp {
             background-color: #0b0f19;
             background-image: 
@@ -33,7 +33,7 @@ st.markdown("""
             color: white;
         }
 
-        /* Input Styling - Minimal & Clean */
+        /* Input Styling */
         .stTextInput > div > div > input {
             background-color: rgba(255, 255, 255, 0.07) !important;
             color: white !important;
@@ -43,7 +43,7 @@ st.markdown("""
             font-size: 16px;
         }
 
-        /* Button Styling - Fixed Alignment */
+        /* Button Styling */
         div.stButton > button {
             background: linear-gradient(90deg, #ff4b4b, #d91e18);
             color: white;
@@ -85,55 +85,56 @@ def load_lottieurl(url):
     try: return requests.get(url).json()
     except: return None
 
-lottie_heart = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_m6cu9scz.json")
+lottie_reg = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_m6cu9scz.json")
 
 # ---------- MAIN CONTENT ----------
 st.write("<br>", unsafe_allow_html=True)
 
-if lottie_heart:
-    st_lottie(lottie_heart, height=150, key="heart_anim")
+if lottie_reg:
+    st_lottie(lottie_reg, height=150, key="reg_anim")
 
-st.markdown('<p class="title-text">Secure Login</p>', unsafe_allow_html=True)
-# Simple English Line
-st.markdown("<p style='text-align: center; color: #a0aec0; font-size: 16px;'>Please login to check your heart health report</p>", unsafe_allow_html=True)
+st.markdown('<p class="title-text">Create Account</p>', unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #a0aec0; font-size: 16px;'>Join Heart AI to monitor your health</p>", unsafe_allow_html=True)
 st.write("<br>", unsafe_allow_html=True)
 
 # --- Input Fields ---
-email = st.text_input("📧 Email Address", placeholder="Enter your gmail")
-username = st.text_input("👤 Username", placeholder="Enter your username")
-password = st.text_input("🔑 Password", type="password", placeholder="At least 8 characters")
+new_email = st.text_input("📧 Gmail Address", placeholder="e.g. example@gmail.com")
+new_user = st.text_input("👤 Choose Username", placeholder="e.g. aryan123")
+new_pass = st.text_input("🔑 Create Password", type="password", placeholder="At least 8 characters")
+confirm_pass = st.text_input("🔄 Confirm Password", type="password", placeholder="Repeat your password")
 
 st.write("<br>", unsafe_allow_html=True)
 
-# --- Buttons Position Fixed ---
+# --- Buttons ---
 col1, col2 = st.columns(2)
 
 with col1:
-    if st.button("🚀 Login"):
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            st.error("Please enter a valid email!")
-        elif len(password) < 8:
-            st.error("Password must be 8 characters or more.")
-        elif username == "" or password == "":
-            st.warning("All fields are required!")
+    if st.button("📝 Register"):
+        # Validation Logic
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", new_email):
+            st.error("Please enter a valid Gmail address!")
+        elif len(new_pass) < 8:
+            st.error("Password must be at least 8 characters long.")
+        elif new_pass != confirm_pass:
+            st.error("Passwords do not match!")
+        elif new_user == "" or new_email == "":
+            st.warning("All fields are mandatory.")
         else:
-            c.execute("SELECT * FROM users WHERE (username=? OR email=?) AND password=?", (username, email, password))
-            user = c.fetchone()
-            if user:
-                st.session_state.user = username
-                st.success("Login Successful!")
-                st.switch_page("pages/home.py")
-            else:
-                st.error("Invalid Login Details.")
+            try:
+                c.execute("INSERT INTO users (username, email, password) VALUES (?,?,?)", (new_user, new_email, new_pass))
+                conn.commit()
+                st.success("Account created! Please Login.")
+                st.balloons()
+            except sqlite3.IntegrityError:
+                st.error("Username already taken. Try another one.")
 
 with col2:
     if st.button("⏪ Back"):
-        st.switch_page("index.py")
+        st.switch_page("pages/login.py")
 
 st.write("<br>", unsafe_allow_html=True)
 st.divider()
 
-# --- Register Link ---
-st.markdown("<p style='text-align: center; color: #888;'>Don't have an account?</p>", unsafe_allow_html=True)
-if st.button("📝 Create New Account"):
-    st.switch_page("pages/register.py")
+st.markdown("<p style='text-align: center; color: #888;'>Already have an account?</p>", unsafe_allow_html=True)
+if st.button("🚀 Go to Login"):
+    st.switch_page("pages/login.py")
