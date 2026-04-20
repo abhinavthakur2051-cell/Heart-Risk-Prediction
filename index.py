@@ -105,7 +105,7 @@ with hero_col3:
     # Button ko title ke aage (right side) center karne ke liye thodi space daali hai
     st.markdown("<br><br>", unsafe_allow_html=True) 
     if st.button("🚀 Get Started"):
-        st.switch_page("pages/login.py")
+        st.switch_page("login.py")
 
 st.write("")
 st.write("---")
