@@ -122,7 +122,7 @@ with col1:
             if user:
                 st.session_state.user = username
                 st.success("Login Successful!")
-                st.switch_page("pages/home.py")
+                st.switch_page("home.py")
             else:
                 st.error("Invalid Login Details.")
 
@@ -136,4 +136,4 @@ st.divider()
 # --- Register Link ---
 st.markdown("<p style='text-align: center; color: #888;'>Don't have an account?</p>", unsafe_allow_html=True)
 if st.button("📝 Create New Account"):
-    st.switch_page("pages/register.py")
+    st.switch_page("register.py")
